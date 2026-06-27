@@ -13,6 +13,7 @@
 
 var NOTIFY_EMAIL = 'tranav50@gmail.com'; // email on every submission ('' to turn off)
 var CAP = 75;                            // founding seats; overflow goes to a "Reserve" tab
+var TOKEN = 'aerca-7Qm2-pX9v';           // must match FORM_TOKEN in index.html (spam filter)
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -23,6 +24,11 @@ function doPost(e) {
     var raw = (e && e.parameter && e.parameter.payload) ? e.parameter.payload
             : (e && e.postData ? e.postData.contents : '{}');
     var data = JSON.parse(raw);
+    // basic spam filter: require the shared token and an empty honeypot, else drop silently
+    if (data._token !== TOKEN || data._hp) {
+      return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
+    }
+    delete data._token; delete data._hp;
     data.received_at = new Date();
 
     // route each submission to its own tab; founding caps at CAP, overflow -> Reserve

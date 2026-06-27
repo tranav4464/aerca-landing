@@ -317,6 +317,7 @@ header.scrolled{background:rgba(246,243,236,.86);backdrop-filter:blur(14px);bord
 /* signup card */
 .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(26px,3vw,36px);box-shadow:0 36px 70px -44px rgba(20,21,15,.42)}
 .counter-wrap{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.hp-field{position:absolute!important;left:-9999px!important;top:auto;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
 .founding-status{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;font-weight:600;color:var(--accent-ink);background:rgba(11,92,59,.07);border:1px solid rgba(11,92,59,.18);border-radius:11px;padding:11px 14px;margin-bottom:22px;line-height:1.45}
 .founding-status .fstatus-dot{margin-top:5px}
 .fstatus-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:0 0 auto;box-shadow:0 0 0 0 rgba(11,92,59,.5);animation:livePulse 2s infinite}
@@ -1251,6 +1252,7 @@ html,body{overflow-x:hidden}
       <div class="apply-count" id="applyCount">Question 1 of 15</div>
     </div>
     <div class="apply-screen" id="applyScreen"></div>
+    <input class="hp-field" type="text" id="applyHP" tabindex="-1" autocomplete="off" aria-hidden="true" />
     <button class="apply-back" id="applyBack" hidden>&larr; Back</button>
   </div>
 </div>
@@ -1265,6 +1267,7 @@ html,body{overflow-x:hidden}
       <input class="ms-input" type="text" id="cName" placeholder="Your name" autocomplete="name" />
       <input class="ms-input" type="email" id="cEmail" placeholder="Your email" autocomplete="email" />
       <textarea class="ms-input" id="cMsg" placeholder="Your message"></textarea>
+      <input class="hp-field" type="text" id="cHP" tabindex="-1" autocomplete="off" aria-hidden="true" />
       <div id="cErr" style="color:#b4532a;font-size:13.5px;font-weight:600;min-height:18px;margin-bottom:6px"></div>
       <button type="button" class="btn btn-primary" id="cSend" style="width:100%;justify-content:center">Send message</button>
     </div>
@@ -1343,9 +1346,11 @@ document.querySelectorAll('[data-count]').forEach(el=>statIO.observe(el));
    >> Setup steps + the script are in GOOGLE-SHEET-SETUP.md
    ============================================================ */
 const APPLY_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwGCyZ0J6_-6aAa8lenMK3xOv5FjajvpgO0hdkjJt6wiJ4BorJjSiXBhQd27STnAbbZzQ/exec';
+const FORM_TOKEN = 'aerca-7Qm2-pX9v'; /* must match TOKEN in apps-script.gs; blocks blind endpoint spam */
 /* Reliable fire-and-forget POST to Apps Script: sendBeacon first (works cross-origin and from file://),
    then a hidden-form POST fallback (also CORS-free), then fetch. Apps Script reads e.postData.contents. */
 function apost(payload){
+  try{ if(payload && typeof payload==="object"){ payload._token=FORM_TOKEN; } }catch(e){}
   var body=JSON.stringify(payload);
   try{ if(navigator.sendBeacon && navigator.sendBeacon(APPLY_ENDPOINT, body)) return; }catch(e){}
   try{
@@ -1556,7 +1561,8 @@ const Q_FREE = [
 
   function submit(){
     if(submitted) return; submitted=true;
-    var payload=Object.assign({}, answers, getUTM(), {submitted_at:new Date().toISOString()});
+    var _hp=document.getElementById("applyHP");
+    var payload=Object.assign({}, answers, getUTM(), {submitted_at:new Date().toISOString(), _hp:(_hp?_hp.value:"")});
     track(MODE==="founding"?"apply_complete":"generate_lead",{value:1,currency:"USD", ...getUTM()});
     if(APPLY_ENDPOINT){ apost(payload); }
     else { console.log("[APPLY] No APPLY_ENDPOINT set. Payload:", payload); }
@@ -1712,7 +1718,8 @@ if(sticky){
     if(!msg){ er.textContent="Please write a message."; return; }
     er.textContent="";
     var btn=document.getElementById("cSend"); btn.disabled=true; btn.textContent="Sending...";
-    var payload={ type:"contact", name:n, email:em, message:msg, _subject:"Aerca contact from "+n, ...getUTM() };
+    var _hp=document.getElementById("cHP");
+    var payload={ type:"contact", name:n, email:em, message:msg, _subject:"Aerca contact from "+n, _hp:(_hp?_hp.value:""), ...getUTM() };
     track("contact_submit", getUTM());
     if(APPLY_ENDPOINT){ apost(payload); }
     else { console.log("[CONTACT] No APPLY_ENDPOINT set. Payload:", payload); }
