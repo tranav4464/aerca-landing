@@ -17,6 +17,7 @@ This sends every founding application, waitlist signup, and contact message stra
 ```javascript
 // ===== Aerca form endpoint =====
 var NOTIFY_EMAIL = 'tranav50@gmail.com'; // email on every submission ('' to turn off)
+var CAP = 75;                            // founding seats; overflow goes to a "Reserve" tab
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -29,10 +30,16 @@ function doPost(e) {
     var data = JSON.parse(raw);
     data.received_at = new Date();
 
-    // route each submission to its own tab
-    var name = (data.type === 'contact') ? 'Contact'
-             : (data.mode === 'free')    ? 'Waitlist'
-             :                             'Founding';
+    // route each submission to its own tab; founding caps at CAP, overflow -> Reserve
+    var name;
+    if (data.type === 'contact') name = 'Contact';
+    else if (data.mode === 'free') name = 'Waitlist';
+    else {
+      var fz = ss.getSheetByName('Founding');
+      var fcount = fz ? Math.max(0, fz.getLastRow() - 1) : 0;
+      if (fcount >= CAP) { name = 'Reserve'; data.status = 'reserve'; }
+      else { name = 'Founding'; data.status = 'founding'; }
+    }
     var sheet = ss.getSheetByName(name) || ss.insertSheet(name);
 
     // headers (each tab keeps its own columns)
@@ -94,8 +101,16 @@ function formatAsTable(sheet) {
   sheet.autoResizeColumns(1, lastCol);
 }
 
-function doGet() {
-  return ContentService.createTextOutput('Aerca form endpoint is live.');
+function doGet(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var f = ss.getSheetByName('Founding');
+  var count = f ? Math.max(0, f.getLastRow() - 1) : 0;
+  var out = JSON.stringify({ foundingCount: count, cap: CAP, full: count >= CAP });
+  if (e && e.parameter && e.parameter.callback) {
+    return ContentService.createTextOutput(e.parameter.callback + '(' + out + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService.createTextOutput(out).setMimeType(ContentService.MimeType.JSON);
 }
 ```
 
@@ -126,7 +141,9 @@ function doGet() {
 - **Email quota:** Gmail Apps Script sends up to ~100 emails/day free — far more than you'll need early. Set `NOTIFY_EMAIL = ''` to turn notifications off and rely on the sheet only.
 ## Nothing showing up? Work through these in order
 1. **Re-paste the updated script** (the one above with the `var raw = ...` line) into Apps Script, then **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy** (keeps the same URL). The new line lets it accept the data whichever way the browser sends it.
-2. **Check access:** open your `…/exec` URL directly in a browser tab. It must show **"Aerca form endpoint is live."** If it shows a Google login/permission page instead, your deployment's **Who has access** isn't **Anyone** — redeploy with that set.
+2. **Check access:** open your `…/exec` URL directly in a browser tab. It must show **JSON** like `{"foundingCount":0,"cap":75,"full":false}`. If it shows a Google login/permission page instead, your deployment's **Who has access** isn't **Anyone** — redeploy with that set.
+
+> **Founding cap:** submissions now split into **Founding / Waitlist / Contact** tabs, and once **75** founding rows exist, new founding applicants automatically go to a **Reserve** tab (and the site shows them the reserve-list flow). After pasting this updated script, **Deploy → Manage deployments → Edit → New version → Deploy** to apply it.
 3. **Check the run log:** Apps Script editor → left sidebar **Executions** (clock icon). Submit the form, refresh Executions:
    - A `doPost` row appears = the data reached the script. If it's red/failed, open it to see the error.
    - No row at all = the request isn't leaving the browser. This is almost always because you're testing the **local `file://` page** — see #4.
