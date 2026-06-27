@@ -1,0 +1,32 @@
+/* Shared styling for Aerca legal pages (privacy / terms / refund) */
+:root{
+  --bg:#F6F3EC; --bg-2:#EEEAE0; --ink:#14150F; --ink-soft:#33332C; --muted:#52524A;
+  --line:rgba(20,21,15,.14); --accent:#0B5C3B; --paper:#fff; --maxw:780px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:"Inter",system-ui,-apple-system,sans-serif;line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--ink);font-weight:600}
+
+.legal-head{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(246,243,236,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:10}
+.legal-head .inner{max-width:var(--maxw);margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-family:"Manrope",sans-serif;font-weight:800;font-size:22px;letter-spacing:-.04em;color:var(--ink)}
+.legal-back{font-size:14px;font-weight:600;color:var(--muted)}
+.legal-back:hover{color:var(--ink);text-decoration:none}
+
+.legal-wrap{max-width:var(--maxw);margin:0 auto;padding:clamp(38px,7vw,68px) 24px 88px}
+.legal-wrap h1{font-family:"Manrope",sans-serif;font-weight:800;letter-spacing:-.03em;font-size:clamp(2rem,5vw,2.7rem);line-height:1.1;margin-bottom:10px}
+.legal-meta{color:var(--muted);font-size:14px;margin-bottom:18px}
+.legal-intro{font-size:1.06rem;color:var(--ink-soft);margin-bottom:6px}
+.legal-wrap h2{font-family:"Manrope",sans-serif;font-weight:700;letter-spacing:-.02em;font-size:1.35rem;margin:38px 0 12px}
+.legal-wrap h3{font-weight:700;font-size:1.04rem;margin:22px 0 8px;color:var(--ink)}
+.legal-wrap p{margin:0 0 14px;color:var(--ink-soft)}
+.legal-wrap ul{margin:0 0 16px 20px;color:var(--ink-soft)}
+.legal-wrap li{margin-bottom:7px}
+.legal-note{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:15px 18px;font-size:14.5px;color:var(--muted);margin:22px 0}
+
+.legal-foot{border-top:1px solid var(--line);margin-top:48px;padding-top:24px;display:flex;gap:22px;flex-wrap:wrap;font-size:14px;font-weight:500;color:var(--muted)}
+.legal-foot a{color:var(--muted)}
+.legal-foot a:hover{color:var(--ink)}
