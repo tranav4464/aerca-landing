@@ -40,6 +40,29 @@
   gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true });
 </script>
 
+<!-- ============================================================
+     META PIXEL  ·  id 1567047311617009  (Aerca Web)
+     Base code fires PageView on every page. Conversion events
+     (Lead / CompleteRegistration / Schedule) are fired from the
+     track() helper below, only on real reservation/application steps.
+     ============================================================ -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1567047311617009');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1567047311617009&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
 <style>
 /* ============================================================
    AERCA landing page
@@ -1286,6 +1309,27 @@ html,body{overflow-x:hidden}
    ============================================================ */
 function track(name, params){
   try{ if(typeof gtag==='function') gtag('event', name, params||{}); }catch(e){}
+  /* Meta Pixel: map our internal events to Meta standard events.
+     One "Lead" fires per real signup (reserve confirm OR free waitlist),
+     so a future Meta "Leads" campaign can optimise without double-counting. */
+  try{
+    if(typeof fbq==='function'){
+      var fbMap={
+        reserve_intent:'Lead',          // founding: clicked confirm reservation ($49 intent)
+        reserve_list_join:'Lead',        // cohort full: joined reserve list
+        generate_lead:'Lead',            // free waitlist completed
+        apply_complete:'CompleteRegistration', // founding application finished
+        book_call:'Schedule',            // booked a Calendly call
+        reserve_view:'ViewContent'       // viewed the reservation step
+      };
+      var ev=fbMap[name];
+      if(ev){
+        var p={};
+        if(params){ if(params.value!=null) p.value=params.value; if(params.currency) p.currency=params.currency; }
+        fbq('track', ev, p);
+      }
+    }
+  }catch(e){}
   /* console mirror so you can verify locally before GA4 is wired */
   console.log('[track]', name, params||{});
 }
