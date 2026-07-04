@@ -1064,7 +1064,7 @@ html,body{overflow-x:hidden}
         <span class="eyebrow reveal">Founding access</span>
         <h2 class="reveal d1" style="margin-top:18px">60 founding agencies, building Aerca with us.</h2>
       </div>
-      <p class="lead reveal d2">Reserve a founding seat for $49 and lock a rate no one will ever be offered again, or join the free waitlist for early access. The earlier you are, the deeper it goes.</p>
+      <p class="lead reveal d2">Reserve a founding seat with a $79 deposit and lock a rate no one will ever be offered again, or join the free waitlist for early access. The earlier you are, the deeper it goes.</p>
     </div>
 
     <div class="ladder">
@@ -1087,13 +1087,13 @@ html,body{overflow-x:hidden}
     <p class="ladder-note reveal">These founding rates are locked for life, for members who reserve a seat. Free waitlisters still get early access and a launch-day offer.</p>
 
     <div class="offer-grid">
-      <!-- PATH 1 - Founding member (one-time $49) -->
+      <!-- PATH 1 - Founding member (one-time $79) -->
       <div class="path-paid reveal">
         <span class="path-badge">&#9733; Founding member &middot; recommended</span>
         <div class="founding-status" id="foundingStatus"><span class="fstatus-dot"></span><span>Limited to <b>60 founding agencies</b>. The first 10 lock <b>90% off for life</b>, in place of the standard tier.</span></div>
         <div class="cta-h">Reserve your founding seat</div>
-        <p class="cta-p">A one-time <b>$49</b> holds your seat and locks the founding rates above for life. Fully refundable, with no subscription until we launch.</p>
-        <div class="price-row"><span class="price-amt">$49</span><span class="price-meta">one-time deposit &middot; fully refundable for 3 months after V1 launch</span></div>
+        <p class="cta-p">A one-time <b>$79</b> deposit holds your seat and locks the founding rates above for life. Fully refundable for up to 3 months after V1 launch.</p>
+        <div class="price-row"><span class="price-amt">$79</span><span class="price-meta">one-time deposit &middot; fully refundable for 3 months after V1 launch</span></div>
         <!-- Opens an honest reservation modal (no card, no charge): captures willingness-to-pay via a GA4 reserve_intent event, then sends them into the form. -->
         <button type="button" class="btn btn-primary" id="payBtn" data-cta="founding_pay" style="width:100%;justify-content:center">Become a founding member<span class="btn-arrow"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11L11 3M5 3h6v6"/></svg></span></button>
         <ul class="path-perks">
@@ -1315,7 +1315,7 @@ function track(name, params){
   try{
     if(typeof fbq==='function'){
       var fbMap={
-        reserve_intent:'Lead',          // founding: clicked confirm reservation ($49 intent)
+        reserve_intent:'Lead',          // founding: clicked confirm reservation ($79 intent)
         reserve_list_join:'Lead',        // cohort full: joined reserve list
         generate_lead:'Lead',            // free waitlist completed
         apply_complete:'CompleteRegistration', // founding application finished
@@ -1627,8 +1627,8 @@ const Q_FREE = [
   function renderReservation(){
     setHead("Founding membership · Private", false);
     screen.innerHTML='<div class="apply-q">How your reservation works</div>'
-      +'<div class="apply-summary"><div class="apply-row"><span>Due today</span><b style="color:var(--a-accent-soft)">$0</b></div><div class="apply-hr"></div><div class="apply-row"><span>Reserved at launch</span><b>$49</b></div><div class="apply-row muted"><span>One-time deposit, fully refundable up to 3 months after V1 launch</span><span>Founding cohort · 60 seats</span></div></div>'
-      +'<div class="apply-sub" style="max-width:480px;margin:0 auto">No card is required now. Next you will fill out a short application to claim your reservation. When we open at launch, we email you a secure link to complete the one-time $49 and lock your rate for life.</div>'
+      +'<div class="apply-summary"><div class="apply-row"><span>Due today</span><b style="color:var(--a-accent-soft)">$0</b></div><div class="apply-hr"></div><div class="apply-row"><span>Reserved at launch</span><b>$79</b></div><div class="apply-row muted"><span>One-time deposit, fully refundable up to 3 months after V1 launch</span><span>Founding cohort · 60 seats</span></div></div>'
+      +'<div class="apply-sub" style="max-width:480px;margin:0 auto">No card is required now. Next you will fill out a short application to claim your reservation. When our early Beta launches, we email you a secure link for the $79 deposit. This gets you into the Beta 15 days before the public V1 launch, and locks your discount for life.</div>'
       +'<button type="button" class="btn apply-continue" id="applyNext">Fill out my application</button>';
     el("applyNext").addEventListener("click", forward);
   }
@@ -1656,7 +1656,7 @@ const Q_FREE = [
     if(MODE==="founding" && FOUNDING_FULL){
       screen.innerHTML=CHECK+'<div class="apply-q">You are on the reserve list.</div><div class="apply-sub" style="max-width:490px;margin:0 auto">The founding 60 is full, but you are now next in line. If a member steps back before launch, the seat is yours first, and we will email you right away.</div><button type="button" class="btn apply-continue" id="rDone">Done</button>';
     } else if(MODE==="founding"){
-      screen.innerHTML=CHECK+'<div class="apply-q">You’re a founding member.</div><div class="apply-sub" style="max-width:480px;margin:0 auto">Congratulations, your founding seat is reserved. We’ll email your Cash-Flow Teardown shortly, and your secure $49 link the moment reservations open.</div><button type="button" class="btn apply-continue" id="rDone">Done</button>';
+      screen.innerHTML=CHECK+'<div class="apply-q">You’re a founding member.</div><div class="apply-sub" style="max-width:480px;margin:0 auto">Congratulations, your founding seat is reserved. We’ll email your Cash-Flow Teardown shortly, and your secure $79 link the moment reservations open.</div><button type="button" class="btn apply-continue" id="rDone">Done</button>';
     } else {
       screen.innerHTML=CHECK+'<div class="apply-q">You’re on the list.</div><div class="apply-sub" style="max-width:480px;margin:0 auto">Check your inbox for your free Cash-Flow Teardown. You’ll get early access the day we launch, plus a launch-day offer.</div><button type="button" class="btn apply-continue" id="rDone">Done</button>';
     }
