@@ -1,7 +1,7 @@
 /* Shared styling for Aerca legal pages (privacy / terms / refund) */
 :root{
-  --bg:#F2EFE9; --bg-2:#EAE6DE; --ink:#14150F; --ink-soft:#33332C; --muted:#52524A;
-  --line:rgba(20,21,15,.14); --accent:#0B5C3B; --paper:#fff; --maxw:780px;
+  --bg:#EDE9E0; --bg-2:#E3DED4; --ink:#14150F; --ink-soft:#33332C; --muted:#52524A;
+  --line:rgba(20,21,15,.14); --accent:#0B5C3B; --paper:#F8F5EF; --maxw:780px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
