@@ -1682,9 +1682,15 @@ const Q_FREE = [
   }
 })();
 
-/* ---------- Book a call (Calendly): section button + nav + mobile menu ---------- */
-function aercaBook(ev){ if(ev) ev.preventDefault(); track('book_call_click',getUTM()); track('book_call'); window.open('https://calendly.com/tranav50/discussion','_blank','noopener'); }
-document.querySelectorAll('#callyBtn,[data-book]').forEach(function(b){ b.addEventListener('click', aercaBook); });
+/* ---------- Book a call (Cal.com popup): section button + nav + mobile menu ---------- */
+document.querySelectorAll('#callyBtn,[data-book],a[href="#call"]').forEach(function(b){ 
+  b.setAttribute('data-cal-link', 'tranav-tyagi-async-q4difu/15min');
+  b.setAttribute('data-cal-namespace', '15min');
+  b.setAttribute('data-cal-config', '{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}');
+  b.addEventListener('click', function(ev) {
+    track('book_call_click',getUTM()); track('book_call');
+  });
+});
 
 /* ---------- FAQ accordion ---------- */
 document.querySelectorAll('.faq-item').forEach(item=>{
@@ -1779,5 +1785,18 @@ if(sticky){
   });
 })();
 </script>
+
+<!-- Cal element-click embed code begins -->
+<script type="text/javascript">
+  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+Cal("init", "15min", {origin:"https://app.cal.com"});
+Cal.config = Cal.config || {};
+Cal.config.forwardQueryParams = true;
+
+  // Configuration for the Cal.com UI
+  Cal.ns["15min"]("ui", {"cssVarsPerTheme":{"light":{"cal-brand":"#2f2f2f"}},"hideEventTypeDetails":false,"layout":"month_view"});
+</script>
+<!-- Cal element-click embed code ends -->
+
 </body>
 </html>
